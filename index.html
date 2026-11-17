@@ -3,206 +3,127 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Puzzle del Sistema Endocrino (30 Preguntas)</title>
+<title>Duelo Endocrino</title>
 <style>
-  * { box-sizing: border-box; }
-  body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: #eef2f5;
-    margin: 0;
-    padding: 20px;
-    color: #333;
-  }
-  h1 { margin-bottom: 20px; text-align: center; }
-  .contenedor-juego {
-    display: flex;
-    gap: 30px;
-    max-width: 1000px;
-    width: 100%;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-  #tablero-puzzle {
-    position: relative;
-    width: 600px;
-    height: 500px;
-    max-width: 100%;
-    background-image: url(https://imgs.search.brave.com/OF8bAtK3HjtxzUUpspzMN42U-YzoG1weBqFxBBarWPY/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90NC5m/dGNkbi5uZXQvanBn/LzA5LzQwLzc0LzQz/LzM2MF9GXzk0MDc0/NDMyOF90NHFQQWJo/NW03UldsazhyQzFQ/c2hTUDZHWW5nMEda/VC5qcGc);
-    background-size: cover;
-    background-position: center;
-    border: 4px solid #2c3e50;
-    border-radius: 10px;
-    overflow: hidden;
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    grid-template-rows: repeat(5, 1fr);
-    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
-  }
-  .pieza {
-    background-color: #2c3e50;
-    border: 1px solid #34495e;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #ecf0f1;
-    font-weight: bold;
-    font-size: 16px;
-    transition: opacity 0.5s ease, transform 0.5s ease;
-    user-select: none;
-  }
-  .pieza.revelada {
-    opacity: 0;
-    transform: scale(0.7);
-    pointer-events: none;
-  }
-  #panel-preguntas {
-    width: 340px;
-    max-width: 100%;
-    background: white;
-    padding: 25px;
-    border-radius: 10px;
-    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-  #texto-pregunta { margin-top: 0; font-size: 18px; line-height: 1.4; }
-  .opcion {
-    display: block;
-    width: 100%;
-    padding: 12px;
-    margin: 10px 0;
-    background: #3498db;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 15px;
-    text-align: left;
-  }
-  .opcion:hover { background: #2980b9; }
-  #mensaje { margin-top: 15px; font-weight: bold; min-height: 24px; text-align: center; }
+  body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; background: #eef2f5; margin: 0; padding: 15px; }
+  .marcador { display: flex; gap: 15px; margin-bottom: 15px; }
+  .eq { padding: 10px 20px; border-radius: 8px; font-weight: bold; border: 3px solid transparent; }
+  #eq1 { background: #d6eaf8; color: #1b4f72; }
+  #eq2 { background: #fadbd8; color: #78281f; }
+  .activo { border-color: #2c3e50; transform: scale(1.05); }
+  .espera { opacity: 0.4; }
+  .juego { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; max-width: 1000px; }
+  #tablero { width: 500px; height: 420px; max-width: 95vw; background: url(https://imgs.search.brave.com/oL4RwphbHCUp9RLm9jizd2WOLhWASthvAtXcuByt7Pg/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90My5m/dGNkbi5uZXQvanBn/LzAxLzc5LzMzLzA2/LzM2MF9GXzE3OTMz/MDY3MF85eWpSc1pO/OUZnM2d1ajZ1Qktx/UWNWbHhYRmV2Q0Vm/Qi5qcGc) center/cover; border: 4px solid #2c3e50; border-radius: 8px; display: grid; grid-template-columns: repeat(6, 1fr); grid-template-rows: repeat(5, 1fr); }
+  .pieza { background: #2c3e50; border: 1px solid #34495e; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: bold; transition: 0.5s; }
+  .revelada { opacity: 0; transform: scale(0.5); pointer-events: none; }
+  #panel { position: relative; width: 350px; max-width: 95vw; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); min-height: 320px; }
+  .opcion { display: block; width: 100%; padding: 12px; margin: 8px 0; color: #fff; border: none; border-radius: 6px; cursor: pointer; text-align: left; font-size: 15px; }
+  .b1 { background: #2980b9; } .b2 { background: #c0392b; }
+  #bloqueo { display: none; position: absolute; inset: 0; background: rgba(44,62,80,0.95); color: #fff; border-radius: 8px; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; z-index: 10; }
+  #bloqueo button { margin-top: 15px; padding: 10px 20px; background: #27ae60; color: #fff; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; }
 </style>
 </head>
 <body>
-
-  <h1>Sistema Endocrino: Desbloquea el Puzzle (<span id="contador">0</span> / 30)</h1>
-
-  <div class="contenedor-juego">
-    <div id="tablero-puzzle"></div>
-    <div id="panel-preguntas">
-      <div>
-        <h3 id="texto-pregunta">Iniciando...</h3>
-        <div id="opciones"></div>
-      </div>
-      <p id="mensaje"></p>
+  <h2>Duelo Endocrino (<span id="cont">0</span>/30)</h2>
+  <div class="marcador">
+    <div id="eq1" class="eq activo">Equipo 1: <span id="p1">0</span></div>
+    <div id="eq2" class="eq espera">Equipo 2: <span id="p2">0</span></div>
+  </div>
+  <div class="juego">
+    <div id="tablero"></div>
+    <div id="panel">
+      <div id="bloqueo"><h3 id="t-esp"></h3><p id="d-esp"></p><button onclick="continuar()">Continuar</button></div>
+      <div id="banner" style="padding:8px; background:#2980b9; color:#fff; border-radius:5px; text-align:center; font-weight:bold; margin-bottom:10px;">Turno Equipo 1</div>
+      <h4 id="preg">Cargando...</h4>
+      <div id="ops"></div>
+      <p id="msg" style="font-weight:bold; text-align:center;"></p>
     </div>
   </div>
-
 <script>
-  const preguntas = [
-    { pregunta: '¿Qué son las hormonas?', opciones: ['Mensajeros químicos del cuerpo', 'Células de defensa', 'Enzimas digestivas'], correcta: 0 },
-    { pregunta: '¿A través de qué medio viajan las hormonas por el cuerpo?', opciones: ['El sistema linfático', 'El torrente sanguíneo', 'Los nervios periféricos'], correcta: 1 },
-    { pregunta: '¿Qué estructura del cerebro conecta el sistema nervioso con el endocrino?', opciones: ['El cerebelo', 'El hipotálamo', 'El bulbo raquídeo'], correcta: 1 },
-    { pregunta: '¿Cuál es conocida como la "glándula maestra" del sistema endocrino?', opciones: ['La tiroides', 'La hipófisis (pituitaria)', 'La glándula pineal'], correcta: 1 },
-    { pregunta: '¿Dónde se ubica la glándula tiroides?', opciones: ['En la base del cuello', 'Encima de los riñones', 'Detrás del estómago'], correcta: 0 },
-    { pregunta: '¿Qué hormona produce el páncreas para reducir el azúcar en la sangre?', opciones: ['Glucagón', 'Adrenalina', 'Insulina'], correcta: 2 },
-    { pregunta: '¿Qué hormona pancreática aumenta los niveles de glucosa en sangre?', opciones: ['Glucagón', 'Tiroxina', 'Melatonina'], correcta: 0 },
-    { pregunta: '¿Qué glándulas se encuentran ubicadas encima de cada riñón?', opciones: ['Paratiroides', 'Suprarrenales', 'Salivales'], correcta: 1 },
-    { pregunta: '¿Qué hormona liberan las glándulas suprarrenales ante el peligro o estrés agudo?', opciones: ['Adrenalina', 'Prolactina', 'Oxitocina'], correcta: 0 },
-    { pregunta: '¿Qué hormona es conocida como la "hormona del estrés" crónico?', opciones: ['Cortisol', 'Melatonina', 'Estrógeno'], correcta: 0 },
-    { pregunta: '¿Qué glándula regula los ciclos de sueño y vigilia?', opciones: ['El timo', 'La glándula pineal', 'La paratiroides'], correcta: 1 },
-    { pregunta: '¿Qué hormona produce la glándula pineal para inducir el sueño?', opciones: ['Serotonina', 'Melatonina', 'Dopamina'], correcta: 1 },
-    { pregunta: '¿Qué glándula regula principalmente el metabolismo del cuerpo?', opciones: ['La tiroides', 'El páncreas', 'Los ovarios'], correcta: 0 },
-    { pregunta: '¿Qué mineral es indispensable para que la tiroides produzca sus hormonas?', opciones: ['Hierro', 'Yodo', 'Potasio'], correcta: 1 },
-    { pregunta: '¿Qué glándulas regulan los niveles de calcio y fósforo en la sangre?', opciones: ['Paratiroides', 'Suprarrenales', 'Sudoríparas'], correcta: 0 },
-    { pregunta: '¿Cuál es la principal hormona sexual masculina producida en los testículos?', opciones: ['Progesterona', 'Testosterona', 'Estrógeno'], correcta: 1 },
-    { pregunta: '¿Qué glándulas producen los estrógenos y la progesterona?', opciones: ['Los ovarios', 'Las suprarrenales', 'La hipófisis'], correcta: 0 },
-    { pregunta: '¿Qué hormona estimula las contracciones del útero durante el parto?', opciones: ['Prolactina', 'Oxitocina', 'Calcitonina'], correcta: 1 },
-    { pregunta: '¿Qué hormona estimula la producción de leche materna tras el parto?', opciones: ['Prolactina', 'Insulina', 'Aldosterona'], correcta: 0 },
-    { pregunta: '¿Qué enfermedad ocurre cuando el páncreas no produce suficiente insulina?', opciones: ['Hipotiroidismo', 'Diabetes mellitus', 'Osteoporosis'], correcta: 1 },
-    { pregunta: '¿Qué hormona secreta la hipófisis para regular el crecimiento de huesos y tejidos?', opciones: ['Somatotropina (GH)', 'Vasopresina', 'Tiroxina'], correcta: 0 },
-    { pregunta: '¿Cómo se llama el agrandamiento anormal de la glándula tiroides?', opciones: ['Bocio', 'Cushing', 'Acromegalia'], correcta: 0 },
-    { pregunta: '¿Qué órgano tiene función mixta (endocrina y digestiva)?', opciones: ['La hipófisis', 'El páncreas', 'La glándula pineal'], correcta: 1 },
-    { pregunta: '¿Qué glándula es fundamental para madurar los linfocitos T del sistema inmune?', opciones: ['El timo', 'La tiroides', 'El hipotálamo'], correcta: 0 },
-    { pregunta: '¿Qué hormona ayuda a los riñones a conservar agua en el cuerpo?', opciones: ['Antidiurética (ADH)', 'Calcitonina', 'Glucagón'], correcta: 0 },
-    { pregunta: '¿Qué trastorno se caracteriza por una producción excesiva de hormonas tiroideas?', opciones: ['Hipertiroidismo', 'Hipotiroidismo', 'Enanismo'], correcta: 0 },
-    { pregunta: '¿Cómo se llaman las células específicas sobre las que actúa una hormona?', opciones: ['Células madre', 'Células diana (o blanco)', 'Células gliales'], correcta: 1 },
-    { pregunta: '¿Qué mecanismo regula la mayoría de las secreciones hormonales para mantener el equilibrio?', opciones: ['Retroalimentación negativa', 'Ósmosis inversa', 'Sinapsis eléctrica'], correcta: 0 },
-    { pregunta: '¿Qué diferencia a las glándulas endocrinas de las exocrinas?', opciones: ['No tienen conductos y vierten a la sangre', 'Producen sudor y saliva', 'Solo funcionan de noche'], correcta: 0 },
-    { pregunta: '¿Qué hormona tiroidea ayuda a reducir los niveles de calcio en la sangre?', opciones: ['Calcitonina', 'Paratohormona', 'Aldosterona'], correcta: 0 }
-  ];
-
-  let indicePregunta = 0;
-  let piezasReveladas = 0;
-  let bloqueo = false;
-  const piezasDisponibles = Array.from({ length: 30 }, (_, i) => i);
-
-  const tablero = document.getElementById('tablero-puzzle');
-  const textoPregunta = document.getElementById('texto-pregunta');
-  const contenedorOpciones = document.getElementById('opciones');
-  const mensaje = document.getElementById('mensaje');
-  const contador = document.getElementById('contador');
-
-  for (let i = 0; i < 30; i++) {
-    const pieza = document.createElement('div');
-    pieza.className = 'pieza';
-    pieza.id = 'pieza-' + i;
-    pieza.textContent = i + 1;
-    tablero.appendChild(pieza);
+const data = [
+  ["¿Qué son las hormonas?", ["Mensajeros químicos", "Células de defensa", "Enzimas"], 0],
+  ["¿Por dónde viajan las hormonas?", ["Sistema linfático", "Torrente sanguíneo", "Nervios"], 1],
+  ["¿Qué conecta el sistema nervioso con el endocrino?", ["Cerebelo", "Hipotálamo", "Bulbo"], 1],
+  ["¿Cuál es la 'glándula maestra'?", ["Tiroides", "Hipófisis", "Pineal"], 1],
+  ["¿Dónde está la tiroides?", ["Base del cuello", "Sobre los riñones", "Estómago"], 0],
+  ["¿Qué hormona baja el azúcar en sangre?", ["Glucagón", "Adrenalina", "Insulina"], 2],
+  ["¿Qué hormona sube la glucosa en sangre?", ["Glucagón", "Tiroxina", "Melatonina"], 0],
+  ["¿Qué glándulas están sobre los riñones?", ["Paratiroides", "Suprarrenales", "Salivales"], 1],
+  ["¿Qué hormona se libera ante peligro agudo?", ["Adrenalina", "Prolactina", "Oxitocina"], 0],
+  ["¿Cuál es la hormona del estrés crónico?", ["Cortisol", "Melatonina", "Estrógeno"], 0],
+  ["¿Qué glándula regula el sueño?", ["Timo", "Glándula pineal", "Paratiroides"], 1],
+  ["¿Qué hormona induce el sueño?", ["Serotonina", "Melatonina", "Dopamina"], 1],
+  ["¿Qué glándula regula el metabolismo?", ["Tiroides", "Páncreas", "Ovarios"], 0],
+  ["¿Qué mineral necesita la tiroides?", ["Hierro", "Yodo", "Potasio"], 1],
+  ["¿Qué glándulas regulan el calcio?", ["Paratiroides", "Suprarrenales", "Sudoríparas"], 0],
+  ["¿Principal hormona sexual masculina?", ["Progesterona", "Testosterona", "Estrógeno"], 1],
+  ["¿Qué producen los ovarios?", ["Estrógenos y progesterona", "Insulina", "Cortisol"], 0],
+  ["¿Hormona de las contracciones del parto?", ["Prolactina", "Oxitocina", "Calcitonina"], 1],
+  ["¿Hormona de la producción de leche?", ["Prolactina", "Insulina", "Aldosterona"], 0],
+  ["¿Enfermedad por falta de insulina?", ["Hipotiroidismo", "Diabetes mellitus", "Osteoporosis"], 1],
+  ["¿Hormona del crecimiento?", ["Somatotropina (GH)", "Vasopresina", "Tiroxina"], 0],
+  ["¿Agrandamiento anormal de la tiroides?", ["Bocio", "Cushing", "Acromegalia"], 0],
+  ["¿Órgano con función endocrina y digestiva?", ["Hipófisis", "Páncreas", "Pineal"], 1],
+  ["¿Glándula que madura linfocitos T?", ["Timo", "Tiroides", "Hipotálamo"], 0],
+  ["¿Hormona que conserva agua en riñones?", ["Antidiurética (ADH)", "Calcitonina", "Glucagón"], 0],
+  ["¿Exceso de hormonas tiroideas?", ["Hipertiroidismo", "Hipotiroidismo", "Enanismo"], 0],
+  ["¿Células donde actúa una hormona?", ["Células madre", "Células diana", "Células gliales"], 1],
+  ["¿Mecanismo que regula las hormonas?", ["Retroalimentación negativa", "Ósmosis", "Sinapsis"], 0],
+  ["¿Característica de glándulas endocrinas?", ["Vierten directo a la sangre", "Tienen conductos", "Solo actúan de noche"], 0],
+  ["¿Hormona tiroidea que reduce el calcio?", ["Calcitonina", "Paratohormona", "Aldosterona"], 0]
+];
+let idx = 0, rev = 0, turno = 1, p1 = 0, p2 = 0, lock = false;
+let disp = Array.from({length: 30}, (_, i) => i);
+const tab = document.getElementById('tablero');
+for(let i=0; i<30; i++) {
+  let d = document.createElement('div'); d.className = 'pieza'; d.id = 'pz'+i; d.textContent = i+1;
+  tab.appendChild(d);
+}
+function cargar() {
+  lock = false; document.getElementById('msg').textContent = '';
+  document.getElementById('eq1').className = turno === 1 ? 'eq activo' : 'eq espera';
+  document.getElementById('eq2').className = turno === 2 ? 'eq activo' : 'eq espera';
+  const ban = document.getElementById('banner');
+  ban.style.background = turno === 1 ? '#2980b9' : '#c0392b';
+  ban.textContent = `Turno Equipo ${turno} (Equipo ${turno===1?2:1} en espera)`;
+  const q = data[idx];
+  document.getElementById('preg').textContent = `${idx+1}. ${q[0]}`;
+  const ops = document.getElementById('ops'); ops.innerHTML = '';
+  q[1].forEach((txt, i) => {
+    let b = document.createElement('button'); b.className = `opcion b${turno}`; b.textContent = txt;
+    b.onclick = () => check(i); ops.appendChild(b);
+  });
+}
+function check(sel) {
+  if(lock) return; lock = true;
+  const msg = document.getElementById('msg');
+  if(sel === data[idx][2]) {
+    msg.style.color = 'green'; msg.textContent = '¡Correcto! +1 pieza';
+    if(turno === 1) { p1++; document.getElementById('p1').textContent = p1; }
+    else { p2++; document.getElementById('p2').textContent = p2; }
+    let r = Math.floor(Math.random() * disp.length);
+    document.getElementById('pz' + disp.splice(r, 1)).classList.add('revelada');
+    rev++; document.getElementById('cont').textContent = rev; idx++;
+    idx < 30 ? cambiar('¡Punto ganado!') : setTimeout(fin, 800);
+  } else {
+    msg.style.color = 'red'; msg.textContent = 'Incorrecto. Pierde turno.';
+    cambiar('¡Fallo!');
   }
-
-  function mostrarPregunta() {
-    bloqueo = false;
-    mensaje.textContent = '';
-    const actual = preguntas[indicePregunta];
-    textoPregunta.textContent = `${indicePregunta + 1}. ${actual.pregunta}`;
-    contenedorOpciones.innerHTML = '';
-
-    actual.opciones.forEach((opcion, i) => {
-      const boton = document.createElement('button');
-      boton.className = 'opcion';
-      boton.textContent = opcion;
-      boton.onclick = () => comprobarRespuesta(i);
-      contenedorOpciones.appendChild(boton);
-    });
-  }
-
-  function comprobarRespuesta(seleccion) {
-    if (bloqueo) return;
-    const actual = preguntas[indicePregunta];
-
-    if (seleccion === actual.correcta) {
-      bloqueo = true;
-      mensaje.style.color = '#27ae60';
-      mensaje.textContent = '¡Correcto! Pieza desbloqueada.';
-      
-      const posAzar = Math.floor(Math.random() * piezasDisponibles.length);
-      const idPieza = piezasDisponibles.splice(posAzar, 1);
-      document.getElementById('pieza-' + idPieza).classList.add('revelada');
-
-      piezasReveladas++;
-      contador.textContent = piezasReveladas;
-      indicePregunta++;
-
-      if (indicePregunta < preguntas.length) {
-        setTimeout(mostrarPregunta, 700);
-      } else {
-        setTimeout(() => {
-          document.getElementById('panel-preguntas').innerHTML = 
-            '<h2 style="text-align:center; color:#27ae60;">¡Excelente!<br><br>Completaste las 30 preguntas del sistema endocrino.</h2>';
-        }, 700);
-      }
-    } else {
-      mensaje.style.color = '#c0392b';
-      mensaje.textContent = 'Incorrecto. Intenta de nuevo.';
-    }
-  }
-
-  mostrarPregunta();
+}
+function cambiar(motivo) {
+  turno = turno === 1 ? 2 : 1;
+  setTimeout(() => {
+    document.getElementById('t-esp').textContent = motivo;
+    document.getElementById('d-esp').textContent = `Sigue Equipo ${turno}. Equipo ${turno===1?2:1} espera.`;
+    document.getElementById('bloqueo').style.display = 'flex';
+  }, 800);
+}
+function continuar() { document.getElementById('bloqueo').style.display = 'none'; cargar(); }
+function fin() {
+  let res = p1 > p2 ? `Gana Equipo 1 (${p1}-${p2})` : p2 > p1 ? `Gana Equipo 2 (${p2}-${p1})` : `Empate (${p1}-${p2})`;
+  document.getElementById('panel').innerHTML = `<div style="text-align:center"><h3>¡Fin del juego!</h3><h2>${res}</h2><button onclick="location.reload()">Reiniciar</button></div>`;
+}
+cargar();
 </script>
 </body>
 </html>
